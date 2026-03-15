@@ -10,7 +10,6 @@ module BiochemBackend
     config.time_zone = "Moscow"
     config.i18n.default_locale = :ru
 
-    config.middleware.use ActionDispatch::Cookies
-    config.middleware.use ActionDispatch::Session::CookieStore
+    config.secret_key_base = ENV["SECRET_KEY_BASE"]
   end
 end
