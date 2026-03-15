@@ -1,16 +1,10 @@
 version: "3.9"
 
 services:
-  db:
-    ports:
-      - "5432:5432"
-
   backend:
     volumes:
       - .:/app
       - bundle_cache:/usr/local/bundle
-    ports:
-      - "3000:3000"
     command: >
       bash -c "bundle exec rails db:prepare && bundle exec puma -C config/puma.rb"
     stdin_open: true
@@ -20,8 +14,6 @@ services:
     volumes:
       - ../biochem-frontend:/app
       - node_modules_cache:/app/node_modules
-    ports:
-      - "4321:4321"
     command: npm run dev -- --host 0.0.0.0
 
   nginx:
