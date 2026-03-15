@@ -8,7 +8,8 @@ module BiochemBackend
     config.load_defaults 8.0
     config.api_only = true
     config.time_zone = "Moscow"
-    config.i18n.default_locale = :ru
+    config.i18n.default_locale = :en
+    config.i18n.available_locales = [:en, :ru]
 
     config.secret_key_base = ENV["SECRET_KEY_BASE"]
   end

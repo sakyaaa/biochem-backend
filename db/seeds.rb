@@ -7,7 +7,7 @@ sections = [
   { name: "Спортивная медицина", slug: "sport-medicine", description: "Спортивная медицина и реабилитация" }
 ]
 
-sections.each { |s| Section.find_or_create_by!(slug: s[:slug]).update!(s) }
+sections.each { |s| Section.find_or_initialize_by(slug: s[:slug]).update!(s) }
 puts "Создано #{Section.count} разделов"
 
 # Администратор
