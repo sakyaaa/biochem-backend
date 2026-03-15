@@ -1,5 +1,6 @@
 module Api
   class BaseController < ActionController::API
+    include ActionController::Cookies
     include Pundit::Authorization
 
     before_action :inject_jwt_from_cookie
@@ -11,6 +12,14 @@ module Api
     rescue_from ActionController::ParameterMissing, with: :render_bad_request
 
     private
+
+    def current_user
+      @current_user ||= warden.authenticate(scope: :user)
+    end
+
+    def authenticate_user!
+      render json: { error: "Необходима авторизация" }, status: :unauthorized unless current_user
+    end
 
     def inject_jwt_from_cookie
       return if request.headers["Authorization"].present?

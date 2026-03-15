@@ -20,9 +20,7 @@ Rails.application.routes.draw do
     resources :tags, only: %i[index]
     resources :bookmarks, only: %i[index create destroy]
 
-    namespace :reports do
-      get :popular
-    end
+    get "reports/popular", to: "reports/popular#popular"
 
     resource :profile, only: %i[show update]
   end

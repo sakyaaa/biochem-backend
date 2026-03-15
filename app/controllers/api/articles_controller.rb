@@ -22,7 +22,7 @@ module Api
     end
 
     def show
-      ViewLog.create!(user: current_user, article: @article)
+      ViewLog.create(user: current_user, article: @article)
       Article.where(id: @article.id).update_all("views_count = views_count + 1")
       render json: { data: serialize_resource(@article.reload) }
     end

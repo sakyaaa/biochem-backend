@@ -1,5 +1,6 @@
 require_relative "boot"
 require "rails/all"
+require_relative "../lib/jwt_cookie_railtie"
 
 Bundler.require(*Rails.groups)
 

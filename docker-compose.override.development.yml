@@ -1,5 +1,7 @@
 services:
-  backend:
+  web:
+    environment:
+      RAILS_LOG_TO_STDOUT: "true"
     volumes:
       - .:/app
       - bundle_cache:/usr/local/bundle

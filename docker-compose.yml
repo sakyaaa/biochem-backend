@@ -14,7 +14,7 @@ services:
       retries: 5
     restart: unless-stopped
 
-  backend:
+  web:
     build:
       context: .
       dockerfile: Dockerfile
@@ -36,7 +36,7 @@ services:
     environment:
       PUBLIC_API_URL: http://localhost/api
     depends_on:
-      - backend
+      - web
     restart: unless-stopped
 
   nginx:
@@ -45,7 +45,7 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - frontend
-      - backend
+      - web
     restart: unless-stopped
 
 volumes:
