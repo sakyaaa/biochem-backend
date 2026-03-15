@@ -6,6 +6,19 @@ module Api
       private
 
       def respond_with(resource, _opts = {})
+        # Devise-JWT помещает токен в заголовок Authorization ответа —
+        # перекладываем его в httpOnly cookie, чтобы JS не мог его прочитать
+        token = response.headers["Authorization"]&.delete_prefix("Bearer ")
+        if token.present?
+          cookies[:jwt_token] = {
+            value:     token,
+            httponly:  true,
+            same_site: :strict,
+            secure:    Rails.env.production?,
+            expires:   24.hours.from_now
+          }
+        end
+
         render json: {
           data: {
             id:    resource.id,
@@ -18,11 +31,8 @@ module Api
       end
 
       def respond_to_on_destroy
-        if current_user
-          render json: { message: "Выход выполнен успешно" }, status: :ok
-        else
-          render json: { message: "Нет активной сессии" }, status: :unauthorized
-        end
+        cookies.delete(:jwt_token)
+        render json: { message: "Выход выполнен успешно" }, status: :ok
       end
     end
   end

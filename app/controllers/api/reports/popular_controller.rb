@@ -4,8 +4,8 @@ module Api
       skip_before_action :authenticate_user!
 
       def popular
-        from = params[:from] ? Date.parse(params[:from]).beginning_of_day : 30.days.ago
-        to   = params[:to]   ? Date.parse(params[:to]).end_of_day         : Time.current
+        from = parse_date(params[:from])&.beginning_of_day || 30.days.ago
+        to   = parse_date(params[:to])&.end_of_day         || Time.current
 
         articles = Article.published
                           .joins(:view_logs)
@@ -22,6 +22,16 @@ module Api
           },
           meta: { from: from, to: to }
         }
+      end
+      private
+
+      def parse_date(value)
+        return nil if value.blank?
+
+        Date.parse(value)
+      rescue ArgumentError
+        render json: { error: "Неверный формат даты, используйте YYYY-MM-DD" }, status: :bad_request
+        nil
       end
     end
   end

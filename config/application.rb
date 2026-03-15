@@ -12,5 +12,8 @@ module BiochemBackend
     config.i18n.available_locales = [:en, :ru]
 
     config.secret_key_base = ENV["SECRET_KEY_BASE"]
+
+    # Нужен для httpOnly cookie с JWT
+    config.middleware.use ActionDispatch::Cookies
   end
 end

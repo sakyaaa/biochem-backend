@@ -2,6 +2,7 @@ module Api
   class BaseController < ActionController::API
     include Pundit::Authorization
 
+    before_action :inject_jwt_from_cookie
     before_action :authenticate_user!
 
     rescue_from Pundit::NotAuthorizedError,        with: :render_forbidden
@@ -10,6 +11,13 @@ module Api
     rescue_from ActionController::ParameterMissing, with: :render_bad_request
 
     private
+
+    def inject_jwt_from_cookie
+      return if request.headers["Authorization"].present?
+
+      token = cookies[:jwt_token]
+      request.headers["Authorization"] = "Bearer #{token}" if token.present?
+    end
 
     def render_forbidden
       render json: { error: "Доступ запрещён" }, status: :forbidden
