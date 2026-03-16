@@ -1,13 +1,14 @@
 module Api
   module Auth
     class SessionsController < Devise::SessionsController
+      include ActionController::Cookies
       respond_to :json
 
       private
 
       def respond_with(_resource, _opts = {})
         # warden.user(:user) возвращает аутентифицированного пользователя в API-режиме
-        resource = warden.user(:user) || _resource
+        resource = warden.user(:api_user) || _resource
         render json: {
           data: {
             id:    resource.id,

@@ -52,8 +52,26 @@
 ### Данные
 - `db/seeds.rb` — расширен: 3 пользователя (admin/editor/member), 10 тегов, 9 статей (8 published + 1 draft), 6 комментариев, 2 закладки
 
-### Известная проблема (TODO)
-- Аутентификация через `POST /api/auth/sign_in` возвращает 401 + fallback на `new` action.
-  Devise `database_authenticatable` стратегия не запускается при 0 DB queries.
-  Предположительно: `allow_params_authentication!` не ставит env var из-за отсутствия `Devise::Controllers::Helpers` в API-only цепочке.
-  Нужно: добавить `include Devise::Controllers::Helpers` в `Api::Auth::SessionsController` или `DeviseController`/`ApplicationController`.
+## 2026-03-16 — Тестовое покрытие + баг-фиксы
+
+### Новые файлы тестов
+- `spec/factories/comments.rb`, `tags.rb`, `bookmarks.rb`, `view_logs.rb`
+- `spec/support/auth_helpers.rb`, `spec/support/request_helpers.rb`, `spec/support/database_extensions.rb`
+- `spec/models/user_spec.rb`, `section_spec.rb`, `comment_spec.rb`, `tag_spec.rb`, `bookmark_spec.rb`
+- `spec/models/article_spec.rb` — дополнен scopes, search_fulltext, habtm tags
+- `spec/policies/article_policy_spec.rb`, `comment_policy_spec.rb`
+- `spec/requests/api/articles_spec.rb`, `comments_spec.rb`, `sections_spec.rb`, `tags_spec.rb`, `bookmarks_spec.rb`, `profiles_spec.rb`
+- `spec/requests/api/reports/popular_spec.rb`
+- `spec/requests/api/auth/sessions_spec.rb`, `registrations_spec.rb`
+
+### Исправленные баги в приложении
+- `app/controllers/api/base_controller.rb` — scope `:user` → `:api_user` (Devise mapping в namespace создаёт `api_user`, не `user`)
+- `app/controllers/api/auth/sessions_controller.rb` — `warden.user(:user)` → `:api_user`; добавлен `include ActionController::Cookies`
+- `app/controllers/api/auth/registrations_controller.rb` — добавлен `configure_permitted_parameters` для поля `:name`
+- `app/controllers/api/reports/popular_controller.rb` — добавлен `return if performed?` после `parse_date` (fix double render)
+- `config/initializers/devise.rb` — `config.navigational_formats = []` (API-only без flash); `config.warden { store: false }` (без session storage)
+
+### Важно для тестов
+- Параметр входа: `api_user: { email:, password: }` (не `user:`) — из-за namespace scope
+- Request specs используют `sign_in user` (`Devise::Test::IntegrationHelpers`) вместо HTTP sign_in
+- Итог: 105 RSpec примеров, 0 failures

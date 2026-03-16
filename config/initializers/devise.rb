@@ -13,6 +13,12 @@ Devise.setup do |config|
   config.reset_password_within = 6.hours
   config.sign_out_via = :delete
 
+  config.navigational_formats = []
+
+  config.warden do |manager|
+    manager.scope_defaults :api_user, store: false
+  end
+
   config.jwt do |jwt|
     jwt.secret = ENV.fetch("DEVISE_JWT_SECRET_KEY") { Rails.application.secret_key_base }
     jwt.dispatch_requests = [

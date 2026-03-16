@@ -1,0 +1,46 @@
+require "rails_helper"
+
+RSpec.describe "Auth::Registrations API", type: :request do
+  describe "POST /api/auth/sign_up" do
+    let(:valid_params) do
+      {
+        api_user: {
+          name:                  "Тестовый Пользователь",
+          email:                 "test_#{SecureRandom.hex(4)}@example.com",
+          password:              "Password123!",
+          password_confirmation: "Password123!"
+        }
+      }
+    end
+
+    it "returns 201 with valid data" do
+      post "/api/auth/sign_up", params: valid_params, as: :json
+      expect(response).to have_http_status(:created)
+      expect(json["data"]["email"]).to eq(valid_params[:api_user][:email])
+      expect(json["message"]).to be_present
+    end
+
+    it "returns 422 with duplicate email" do
+      existing = create(:user)
+      post "/api/auth/sign_up",
+           params: { api_user: {
+             name:                  "Другой",
+             email:                 existing.email,
+             password:              "Password123!",
+             password_confirmation: "Password123!"
+           } }, as: :json
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json["errors"]).to be_present
+    end
+
+    it "returns 422 when name is missing" do
+      params = { api_user: valid_params[:api_user].except(:name) }
+      post "/api/auth/sign_up", params: params, as: :json
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+  end
+
+  def json
+    JSON.parse(response.body)
+  end
+end

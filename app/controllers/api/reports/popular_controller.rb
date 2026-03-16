@@ -4,8 +4,12 @@ module Api
       skip_before_action :authenticate_user!
 
       def popular
-        from = parse_date(params[:from])&.beginning_of_day || 30.days.ago
-        to   = parse_date(params[:to])&.end_of_day         || Time.current
+        from = parse_date(params[:from])
+        return if performed?
+        to   = parse_date(params[:to])
+        return if performed?
+        from = from&.beginning_of_day || 30.days.ago
+        to   = to&.end_of_day         || Time.current
 
         articles = Article.published
                           .joins(:view_logs)

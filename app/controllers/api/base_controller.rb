@@ -14,7 +14,7 @@ module Api
     private
 
     def current_user
-      @current_user ||= warden.authenticate(scope: :user)
+      @current_user ||= warden.authenticate(scope: :api_user)
     end
 
     def authenticate_user!
