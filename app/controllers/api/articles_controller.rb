@@ -67,8 +67,7 @@ module Api
     private
 
     def base_scope
-      # editor/admin видят свои черновики через параметр own=true
-      if params[:own].present? && current_user
+      if params[:own].present? && current_user&.editor_or_admin?
         current_user.admin? ? Article.order(created_at: :desc) : current_user.articles.order(created_at: :desc)
       else
         Article.published.order(created_at: :desc)
