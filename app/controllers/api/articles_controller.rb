@@ -16,6 +16,7 @@ module Api
 
       @articles = @articles.by_tag(params[:tag_id])       if params[:tag_id].present?
       @articles = @articles.by_author(params[:author_id]) if params[:author_id].present?
+      @articles = @articles.where(status: params[:status]) if params[:status].present? && Article.statuses.key?(params[:status])
 
       @articles = case params[:sort]
                   when 'views'  then @articles.reorder(views_count: :desc)
@@ -66,7 +67,12 @@ module Api
     private
 
     def base_scope
-      Article.published.order(created_at: :desc)
+      # editor/admin видят свои черновики через параметр own=true
+      if params[:own].present? && current_user
+        current_user.admin? ? Article.order(created_at: :desc) : current_user.articles.order(created_at: :desc)
+      else
+        Article.published.order(created_at: :desc)
+      end
     end
 
     def set_article
