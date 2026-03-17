@@ -14,7 +14,16 @@ module Api
         @articles = @articles.by_section(params[:section_id])
       end
 
-      @articles = @articles.includes(:author, :section, :tags)
+      @articles = @articles.by_tag(params[:tag_id])       if params[:tag_id].present?
+      @articles = @articles.by_author(params[:author_id]) if params[:author_id].present?
+
+      @articles = case params[:sort]
+                  when 'views'  then @articles.reorder(views_count: :desc)
+                  when 'oldest' then @articles.reorder(created_at: :asc)
+                  else @articles
+                  end
+
+      @articles = @articles.includes(:author, :section, :tags, :comments)
                            .page(params[:page]).per(params[:per_page] || 20)
 
       render json: {
@@ -82,7 +91,8 @@ module Api
                    { id: article.section.id, name: article.section.name,
                      slug: article.section.slug }
                  end,
-        tags: article.tags.map { |t| { id: t.id, name: t.name } }
+        tags: article.tags.map { |t| { id: t.id, name: t.name } },
+        comments_count: article.comments.approved.count
       }
     end
 

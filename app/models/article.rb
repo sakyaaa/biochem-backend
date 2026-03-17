@@ -27,4 +27,6 @@ class Article < ApplicationRecord
   scope :by_section,  ->(section_id) { where(section_id: section_id) }
   scope :popular,     ->(limit = 10) { published.order(views_count: :desc).limit(limit) }
   scope :recent,      ->(limit = 10) { published.order(created_at: :desc).limit(limit) }
+  scope :by_tag,      ->(tag_id) { joins(:tags).where(tags: { id: tag_id }) }
+  scope :by_author,   ->(author_id) { where(author_id: author_id) }
 end

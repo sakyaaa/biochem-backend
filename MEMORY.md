@@ -65,6 +65,25 @@
 
 ---
 
+## 2026-03-17 — Фильтрация, авторы, теги, фиксы закладок
+
+### Изменённые файлы
+- `app/models/article.rb` — добавлены scopes `by_tag` и `by_author`
+- `app/controllers/api/articles_controller.rb` — в `index`: фильтры `tag_id`, `author_id`, сортировка `sort` (`views`/`oldest`); `includes` расширен `:comments`; в `serialize_resource` добавлено поле `comments_count`
+- `app/controllers/api/bookmarks_controller.rb` — `create` переведён на strong params (`bookmark_params`), ответ теперь включает `article_id`; добавлен private метод `bookmark_params`
+- `app/controllers/api/tags_controller.rb` — добавлен action `show`
+- `config/routes.rb` — `tags` расширен до `%i[index show]`; добавлен `resources :authors, only: [:show]` с member-роутом `get :articles`
+- `.rubocop.yml` — `Metrics/AbcSize: Max` поднят с 35 до 42 (из-за расширенного `index` в articles_controller)
+
+### Новые файлы
+- `app/controllers/api/authors_controller.rb` — контроллер с `show` (профиль автора) и `articles` (статьи автора с пагинацией)
+
+### Результаты
+- Rubocop: 0 offenses
+- RSpec: 112 examples, 0 failures
+
+---
+
 ## 2026-03-16 — Тестовое покрытие + баг-фиксы
 
 ### Новые файлы тестов

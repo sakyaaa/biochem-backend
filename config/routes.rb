@@ -19,8 +19,12 @@ Rails.application.routes.draw do
     end
 
     resources :sections, only: %i[index show]
-    resources :tags, only: %i[index]
+    resources :tags, only: %i[index show]
     resources :bookmarks, only: %i[index create destroy]
+
+    resources :authors, only: [:show] do
+      get :articles, on: :member
+    end
 
     get 'reports/popular', to: 'reports/popular#popular'
 

@@ -12,9 +12,9 @@ module Api
     end
 
     def create
-      @bookmark = current_user.bookmarks.build(article_id: params[:article_id])
+      @bookmark = current_user.bookmarks.build(bookmark_params)
       if @bookmark.save
-        render json: { data: { id: @bookmark.id } }, status: :created
+        render json: { data: { id: @bookmark.id, article_id: @bookmark.article_id } }, status: :created
       else
         render json: { errors: @bookmark.errors.full_messages }, status: :unprocessable_entity
       end
@@ -24,6 +24,12 @@ module Api
       @bookmark = current_user.bookmarks.find(params[:id])
       @bookmark.destroy
       head :no_content
+    end
+
+    private
+
+    def bookmark_params
+      params.require(:bookmark).permit(:article_id)
     end
   end
 end
