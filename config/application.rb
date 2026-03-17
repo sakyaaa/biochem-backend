@@ -11,7 +11,7 @@ module BiochemBackend
     config.load_defaults 8.0
     config.api_only = true
     config.time_zone = 'Moscow'
-    config.i18n.default_locale = :en
+    config.i18n.default_locale = :ru
     config.i18n.available_locales = %i[en ru]
 
     config.secret_key_base = ENV.fetch('SECRET_KEY_BASE', nil)
