@@ -2,7 +2,7 @@
 
 module Api
   class ArticlesController < BaseController
-    include ArticleSerializer
+    include ::ArticleSerializer
 
     skip_before_action :authenticate_user!, only: %i[index show]
     before_action :set_article, only: %i[show update destroy]

@@ -2,7 +2,7 @@
 
 module Api
   class AuthorsController < BaseController
-    include ArticleSerializer
+    include ::ArticleSerializer
 
     skip_before_action :authenticate_user!
 
