@@ -5,9 +5,9 @@ module Api
     skip_before_action :authenticate_user!
 
     def index
-      @tags = Tag.joins(:articles).where(articles: { status: :published })
+      @tags = Tag.left_joins(:articles)
                  .select('tags.*, COUNT(articles.id) AS articles_count')
-                 .group('tags.id').order('articles_count DESC')
+                 .group('tags.id').order('articles_count DESC, tags.name ASC')
       render json: { data: @tags.map { |t| { id: t.id, name: t.name, articles_count: t.articles_count } } }
     end
 

@@ -20,11 +20,13 @@ RSpec.describe 'Tags API', type: :request do
       expect(tag_data['articles_count']).to eq(1)
     end
 
-    it 'does not return tags with no published articles' do
+    it 'returns tags with no published articles (articles_count = 0)' do
       orphan_tag = create(:tag)
       get '/api/tags'
       ids = json_data.map { |t| t['id'] }
-      expect(ids).not_to include(orphan_tag.id)
+      expect(ids).to include(orphan_tag.id)
+      orphan_data = json_data.find { |t| t['id'] == orphan_tag.id }
+      expect(orphan_data['articles_count']).to eq(0)
     end
   end
 
