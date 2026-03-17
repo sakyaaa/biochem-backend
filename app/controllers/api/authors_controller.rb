@@ -2,6 +2,8 @@
 
 module Api
   class AuthorsController < BaseController
+    include ArticleSerializer
+
     skip_before_action :authenticate_user!
 
     def show
@@ -18,30 +20,12 @@ module Api
     def articles
       @user = User.find(params[:author_id])
       @articles = Article.published.by_author(@user.id)
-                         .includes(:author, :section, :tags, :comments)
+                         .includes(:author, :section, :tags)
                          .order(created_at: :desc)
                          .page(params[:page]).per(20)
       render json: {
-        data: @articles.map { |a| serialize_article(a) },
+        data: serialize_articles(@articles),
         meta: pagination_meta(@articles)
-      }
-    end
-
-    private
-
-    def serialize_article(article)
-      {
-        id: article.id,
-        title: article.title,
-        content: article.content,
-        status: article.status,
-        views_count: article.views_count,
-        comments_count: article.comments.approved.count,
-        created_at: article.created_at,
-        updated_at: article.updated_at,
-        author: { id: article.author.id, name: article.author.name },
-        section: article.section ? { id: article.section.id, name: article.section.name, slug: article.section.slug } : nil,
-        tags: article.tags.map { |t| { id: t.id, name: t.name } }
       }
     end
   end

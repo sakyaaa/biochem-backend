@@ -2,6 +2,8 @@
 
 module Api
   class ArticlesController < BaseController
+    include ArticleSerializer
+
     skip_before_action :authenticate_user!, only: %i[index show]
     before_action :set_article, only: %i[show update destroy]
 
@@ -24,11 +26,11 @@ module Api
                   else @articles
                   end
 
-      @articles = @articles.includes(:author, :section, :tags, :comments)
+      @articles = @articles.includes(:author, :section, :tags)
                            .page(params[:page]).per(params[:per_page] || 20)
 
       render json: {
-        data: serialize_collection(@articles),
+        data: serialize_articles(@articles),
         meta: pagination_meta(@articles)
       }
     end
@@ -36,14 +38,15 @@ module Api
     def show
       ViewLog.create(user: current_user, article: @article)
       Article.where(id: @article.id).update_all('views_count = views_count + 1')
-      render json: { data: serialize_resource(@article.reload) }
+      @article.reload
+      render json: { data: serialize_article(@article) }
     end
 
     def create
       authorize Article
       @article = current_user.articles.build(article_params)
       if @article.save
-        render json: { data: serialize_resource(@article) }, status: :created
+        render json: { data: serialize_article(@article, comments_count: 0) }, status: :created
       else
         render json: { errors: @article.errors.full_messages }, status: :unprocessable_entity
       end
@@ -52,7 +55,7 @@ module Api
     def update
       authorize @article
       if @article.update(article_params)
-        render json: { data: serialize_resource(@article) }
+        render json: { data: serialize_article(@article) }
       else
         render json: { errors: @article.errors.full_messages }, status: :unprocessable_entity
       end
@@ -80,29 +83,6 @@ module Api
 
     def article_params
       params.require(:article).permit(:title, :content, :status, :section_id, tag_ids: [])
-    end
-
-    def serialize_resource(article)
-      {
-        id: article.id,
-        title: article.title,
-        content: article.content,
-        status: article.status,
-        views_count: article.views_count,
-        created_at: article.created_at,
-        updated_at: article.updated_at,
-        author: { id: article.author.id, name: article.author.name },
-        section: if article.section
-                   { id: article.section.id, name: article.section.name,
-                     slug: article.section.slug }
-                 end,
-        tags: article.tags.map { |t| { id: t.id, name: t.name } },
-        comments_count: article.comments.approved.count
-      }
-    end
-
-    def serialize_collection(articles)
-      articles.map { |a| serialize_resource(a) }
     end
   end
 end

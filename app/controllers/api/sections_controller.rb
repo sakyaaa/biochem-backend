@@ -5,8 +5,9 @@ module Api
     skip_before_action :authenticate_user!
 
     def index
+      counts    = Article.published.group(:section_id).count
       @sections = Section.all.order(:name)
-      render json: { data: @sections.map { |s| serialize(s) } }
+      render json: { data: @sections.map { |s| serialize(s, counts[s.id] || 0) } }
     end
 
     def show
@@ -16,13 +17,13 @@ module Api
 
     private
 
-    def serialize(section)
+    def serialize(section, articles_count = nil)
       {
         id: section.id,
         name: section.name,
         description: section.description,
         slug: section.slug,
-        articles_count: section.articles.published.count
+        articles_count: articles_count || section.articles.published.count
       }
     end
   end
