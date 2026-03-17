@@ -7,25 +7,22 @@ module Api
 
       respond_to :json
 
-      private
-
-      def respond_with(_resource, _opts = {})
-        # warden.user(:user) возвращает аутентифицированного пользователя в API-режиме
-        resource = warden.user(:api_user) || _resource
-        render json: {
-          data: {
-            id: resource.id,
-            name: resource.name,
-            email: resource.email,
-            role: resource.role
-          },
-          message: 'Вход выполнен успешно'
-        }, status: :ok
+      def create
+        user = warden.authenticate(scope: :api_user)
+        if user
+          sign_in(:api_user, user)
+          render json: {
+            data: { id: user.id, name: user.name, email: user.email, role: user.role },
+            message: 'Вход выполнен успешно'
+          }, status: :ok
+        else
+          render json: { error: I18n.t('devise.failure.invalid') }, status: :unauthorized
+        end
       end
 
-      def respond_to_on_destroy
-        # JWT middleware убирает кукe через revocation; дополнительно удалём её здесь
+      def destroy
         cookies.delete(:jwt_token)
+        sign_out(:api_user)
         render json: { message: 'Выход выполнен успешно' }, status: :ok
       end
     end

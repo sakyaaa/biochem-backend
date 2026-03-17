@@ -1,5 +1,23 @@
 # MEMORY.md — biochem-backend
 
+## 2026-03-18 — Локализация, фиксы Devise, тесты на русском
+
+### Изменённые файлы
+- `app/controllers/api/base_controller.rb` — добавлен `before_action :set_locale` (читает cookie `lang`, устанавливает `I18n.locale`)
+- `app/controllers/api/auth/sessions_controller.rb` — переопределены `create`/`destroy` вместо `respond_with`/`respond_to_on_destroy`; `create` использует `warden.authenticate` (без `!`) и возвращает JSON при ошибке
+- `app/models/article.rb` — добавлен `length: { minimum: 10 }` для `content`
+- `config/locales/ru.yml` — добавлены `devise.*` переводы (failure/sessions/registrations/passwords); `errors.format: "%{message}"` убирает префикс атрибута; `^` убран (не работает в Rails); плюрализация `one/few/many/other` для `too_short`/`too_long`
+- `config/locales/en.yml` — создан; ActiveRecord валидации на английском
+- `spec/rails_helper.rb` — `before { I18n.locale = :ru }` для всех тестов
+- `spec/requests/api/articles_spec.rb` — добавлены тесты валидаций с русскими строками
+- `spec/requests/api/auth/registrations_spec.rb` — проверка конкретных русских сообщений об ошибках
+- `spec/requests/api/comments_spec.rb` — тесты валидации body (пустой, слишком короткий)
+- `spec/requests/api/profiles_spec.rb` — проверка русской ошибки при пустом имени
+
+### Итог
+- RSpec: 117 examples, 0 failures
+- Rubocop: 0 offenses
+
 ## 2026-03-15 — Инициализация проекта
 
 Создана начальная структура Rails 8 API-проекта.

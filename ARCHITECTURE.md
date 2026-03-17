@@ -91,17 +91,28 @@ GET    /api/reports/popular — топ статей по просмотрам
 - `editor` (2) — + создание/редактирование своих статей
 - `admin` (3) — полный доступ
 
+## Локализация
+- `config/application.rb` — `default_locale = :ru`
+- `config/locales/ru.yml` — Devise + ActiveRecord валидации + `errors.format: "%{message}"` (без префикса атрибута в full_messages)
+- `config/locales/en.yml` — ActiveRecord валидации на английском
+- `Api::BaseController#set_locale` — читает cookie `lang`, устанавливает `I18n.locale` per-request
+- `SessionsController` наследует `Devise::SessionsController`, переопределяет `create`/`destroy` для JSON-ответов
+
 ## Команды запуска
 ```bash
 # Разработка
-docker-compose -f docker-compose.yml -f docker-compose.override.development.yml up
+docker compose -f docker-compose.yml -f docker-compose.override.development.yml up
 
 # Production
-docker-compose -f docker-compose.yml -f docker-compose.override.production.yml up -d
+docker compose -f docker-compose.yml -f docker-compose.override.production.yml up -d
 
-# Миграции
-docker-compose exec backend bundle exec rails db:create db:migrate db:seed
+# Миграции + seed
+docker compose -f docker-compose.yml -f docker-compose.override.development.yml exec web bundle exec rails db:migrate
+docker compose -f docker-compose.yml -f docker-compose.override.development.yml exec web bundle exec rails db:seed
 
 # Тесты
-docker-compose exec backend bundle exec rspec
+docker compose -f docker-compose.yml -f docker-compose.override.development.yml exec web bundle exec rspec
+
+# Rubocop
+docker compose -f docker-compose.yml -f docker-compose.override.development.yml exec web bundle exec rubocop
 ```

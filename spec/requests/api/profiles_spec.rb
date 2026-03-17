@@ -32,12 +32,13 @@ RSpec.describe 'Profile API', type: :request do
       expect(json['data']['name']).to eq('Новое Имя')
     end
 
-    it 'returns 422 on validation error (blank name)' do
+    it 'returns 422 with Russian error when name is blank' do
       sign_in user
       patch '/api/profile',
             params: { user: { name: '' } },
             as: :json
       expect(response).to have_http_status(:unprocessable_entity)
+      expect(json['errors']).to include('Имя не может быть пустым')
     end
   end
 

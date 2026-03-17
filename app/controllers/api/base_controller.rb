@@ -5,6 +5,7 @@ module Api
     include ActionController::Cookies
     include Pundit::Authorization
 
+    before_action :set_locale
     before_action :inject_jwt_from_cookie
     before_action :authenticate_user!
 
@@ -21,6 +22,11 @@ module Api
 
     def authenticate_user!
       render json: { error: 'Необходима авторизация' }, status: :unauthorized unless current_user
+    end
+
+    def set_locale
+      lang = cookies[:lang]
+      I18n.locale = lang == 'en' ? :en : :ru
     end
 
     def inject_jwt_from_cookie

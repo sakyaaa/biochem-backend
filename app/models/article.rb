@@ -21,7 +21,7 @@ class Article < ApplicationRecord
                   }
 
   validates :title,   presence: true, length: { maximum: 255 }
-  validates :content, presence: true
+  validates :content, presence: true, length: { minimum: 10 }
 
   scope :published,   -> { where(status: :published) }
   scope :by_section,  ->(section_id) { where(section_id: section_id) }

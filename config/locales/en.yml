@@ -1,0 +1,49 @@
+en:
+  errors:
+    format: "%{message}"
+  activerecord:
+    errors:
+      models:
+        article:
+          attributes:
+            title:
+              blank: "Title can't be blank"
+              too_short:
+                one: "Title is too short (minimum 1 character)"
+                other: "Title is too short (minimum %{count} characters)"
+              too_long:
+                one: "Title is too long (maximum 1 character)"
+                other: "Title is too long (maximum %{count} characters)"
+            content:
+              blank: "Content can't be blank"
+              too_short:
+                one: "Content is too short (minimum 1 character)"
+                other: "Content is too short (minimum %{count} characters)"
+            status:
+              inclusion: "Status must be draft or published"
+        comment:
+          attributes:
+            body:
+              blank: "Comment can't be blank"
+              too_short:
+                one: "Comment is too short (minimum 1 character)"
+                other: "Comment is too short (minimum %{count} characters)"
+              too_long:
+                one: "Comment is too long (maximum 1 character)"
+                other: "Comment is too long (maximum %{count} characters)"
+        user:
+          attributes:
+            email:
+              blank: "Email can't be blank"
+              taken: "This email is already registered"
+              invalid: "Email is invalid"
+            password:
+              blank: "Password can't be blank"
+              too_short:
+                one: "Password is too short (minimum 1 character)"
+                other: "Password is too short (minimum %{count} characters)"
+            name:
+              blank: "Name can't be blank"
+              too_long:
+                one: "Name is too long (maximum 1 character)"
+                other: "Name is too long (maximum %{count} characters)"

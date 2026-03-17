@@ -33,6 +33,22 @@ RSpec.describe 'Comments API', type: :request do
       expect(response).to have_http_status(:created)
       expect(json['data']['approved']).to be false
     end
+
+    it 'returns 422 with Russian error when body is too short' do
+      sign_in member
+      post "/api/articles/#{article.id}/comments",
+           params: { comment: { body: 'ок' } }, as: :json
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json['errors'].first).to match(/Комментарий слишком короткий/)
+    end
+
+    it 'returns 422 with Russian error when body is blank' do
+      sign_in member
+      post "/api/articles/#{article.id}/comments",
+           params: { comment: { body: '' } }, as: :json
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json['errors']).to include('Текст комментария не может быть пустым')
+    end
   end
 
   def json

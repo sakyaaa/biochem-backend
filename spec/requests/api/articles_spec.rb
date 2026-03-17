@@ -80,6 +80,24 @@ RSpec.describe 'Articles API', type: :request do
       expect(response).to have_http_status(:created)
       expect(json['data']['title']).to eq('Новая статья')
     end
+
+    it 'returns 422 with Russian error when title is blank' do
+      sign_in editor
+      post '/api/articles',
+           params: { article: { title: '', content: 'Содержимое', status: 'published' } },
+           as: :json
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json['errors']).to include('Заголовок не может быть пустым')
+    end
+
+    it 'returns 422 with Russian error when content is too short' do
+      sign_in editor
+      post '/api/articles',
+           params: { article: { title: 'Заголовок', content: 'Мало', status: 'published' } },
+           as: :json
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json['errors'].first).to match(/Содержимое слишком короткое \(минимум 10 символов\)/)
+    end
   end
 
   describe 'PATCH /api/articles/:id' do

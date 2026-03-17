@@ -22,7 +22,7 @@ RSpec.describe 'Auth::Registrations API', type: :request do
       expect(json['message']).to be_present
     end
 
-    it 'returns 422 with duplicate email' do
+    it 'returns 422 with duplicate email and Russian error' do
       existing = create(:user)
       post '/api/auth/sign_up',
            params: { api_user: {
@@ -32,13 +32,21 @@ RSpec.describe 'Auth::Registrations API', type: :request do
              password_confirmation: 'Password123!'
            } }, as: :json
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(json['errors']).to be_present
+      expect(json['errors']).to include('Этот email уже зарегистрирован')
     end
 
-    it 'returns 422 when name is missing' do
+    it 'returns 422 when name is missing with Russian error' do
       params = { api_user: valid_params[:api_user].except(:name) }
       post '/api/auth/sign_up', params: params, as: :json
       expect(response).to have_http_status(:unprocessable_entity)
+      expect(json['errors']).to include('Имя не может быть пустым')
+    end
+
+    it 'returns 422 when password is too short with Russian error' do
+      params = valid_params.deep_merge(api_user: { password: '123', password_confirmation: '123' })
+      post '/api/auth/sign_up', params: params, as: :json
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json['errors'].first).to match(/Пароль слишком короткий/)
     end
   end
 
