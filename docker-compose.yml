@@ -34,7 +34,7 @@ services:
       context: ../biochem-frontend
       dockerfile: Dockerfile
     environment:
-      PUBLIC_API_URL: http://localhost/api
+      PUBLIC_API_URL: http://web:3000/api
     depends_on:
       - web
     restart: unless-stopped

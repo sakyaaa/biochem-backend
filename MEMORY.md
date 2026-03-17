@@ -52,6 +52,19 @@
 ### Данные
 - `db/seeds.rb` — расширен: 3 пользователя (admin/editor/member), 10 тегов, 9 статей (8 published + 1 draft), 6 комментариев, 2 закладки
 
+## 2026-03-17 — MVP финализация
+
+### Новые тесты
+- `spec/models/view_log_spec.rb` — ассоциации ViewLog (belongs_to :user optional, belongs_to :article)
+- `spec/policies/application_policy_spec.rb` — базовая политика: все методы возвращают false
+- Итог: 112 RSpec примеров, 0 failures
+
+### Rubocop
+- Создан `.rubocop.yml` — отключён Style/Documentation, расширены лимиты Metrics, исключён db/seeds.rb из LineLength
+- Итог: 0 offenses
+
+---
+
 ## 2026-03-16 — Тестовое покрытие + баг-фиксы
 
 ### Новые файлы тестов

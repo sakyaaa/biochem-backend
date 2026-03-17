@@ -9,7 +9,7 @@
 # but do not commit your Gemfile.lock.
 #
 
-require "rubygems"
-require "bundler/setup"
+require 'rubygems'
+require 'bundler/setup'
 
-load Gem.bin_path("bundler", "bundle")
+load Gem.bin_path('bundler', 'bundle')

@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 module Api
   module Auth
     class SessionsController < Devise::SessionsController
       include ActionController::Cookies
+
       respond_to :json
 
       private
@@ -11,19 +14,19 @@ module Api
         resource = warden.user(:api_user) || _resource
         render json: {
           data: {
-            id:    resource.id,
-            name:  resource.name,
+            id: resource.id,
+            name: resource.name,
             email: resource.email,
-            role:  resource.role
+            role: resource.role
           },
-          message: "Вход выполнен успешно"
+          message: 'Вход выполнен успешно'
         }, status: :ok
       end
 
       def respond_to_on_destroy
         # JWT middleware убирает кукe через revocation; дополнительно удалём её здесь
         cookies.delete(:jwt_token)
-        render json: { message: "Выход выполнен успешно" }, status: :ok
+        render json: { message: 'Выход выполнен успешно' }, status: :ok
       end
     end
   end

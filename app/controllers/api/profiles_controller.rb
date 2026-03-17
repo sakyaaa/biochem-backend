@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 module Api
   class ProfilesController < BaseController
     def show
       render json: {
         data: {
-          id:         current_user.id,
-          name:       current_user.name,
-          email:      current_user.email,
-          role:       current_user.role,
+          id: current_user.id,
+          name: current_user.name,
+          email: current_user.email,
+          role: current_user.role,
           created_at: current_user.created_at
         }
       }

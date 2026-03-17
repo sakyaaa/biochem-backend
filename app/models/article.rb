@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class Article < ApplicationRecord
   include PgSearch::Model
 
-  belongs_to :author, class_name: "User"
+  belongs_to :author, class_name: 'User'
   belongs_to :section, optional: true
   has_many   :comments,    dependent: :destroy
   has_many   :bookmarks,   dependent: :destroy
@@ -12,11 +14,11 @@ class Article < ApplicationRecord
   enum :status, { draft: 0, published: 1 }, default: :draft
 
   pg_search_scope :search_fulltext,
-    against: { title: "A", content: "B" },
-    using: {
-      tsearch: { prefix: true, dictionary: "russian" },
-      trigram: { threshold: 0.1 }
-    }
+                  against: { title: 'A', content: 'B' },
+                  using: {
+                    tsearch: { prefix: true, dictionary: 'russian' },
+                    trigram: { threshold: 0.1 }
+                  }
 
   validates :title,   presence: true, length: { maximum: 255 }
   validates :content, presence: true

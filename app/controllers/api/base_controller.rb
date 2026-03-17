@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Api
   class BaseController < ActionController::API
     include ActionController::Cookies
@@ -18,22 +20,22 @@ module Api
     end
 
     def authenticate_user!
-      render json: { error: "Необходима авторизация" }, status: :unauthorized unless current_user
+      render json: { error: 'Необходима авторизация' }, status: :unauthorized unless current_user
     end
 
     def inject_jwt_from_cookie
-      return if request.headers["Authorization"].present?
+      return if request.headers['Authorization'].present?
 
       token = cookies[:jwt_token]
-      request.headers["Authorization"] = "Bearer #{token}" if token.present?
+      request.headers['Authorization'] = "Bearer #{token}" if token.present?
     end
 
     def render_forbidden
-      render json: { error: "Доступ запрещён" }, status: :forbidden
+      render json: { error: 'Доступ запрещён' }, status: :forbidden
     end
 
     def render_not_found
-      render json: { error: "Запись не найдена" }, status: :not_found
+      render json: { error: 'Запись не найдена' }, status: :not_found
     end
 
     def render_unprocessable(e)
@@ -47,9 +49,9 @@ module Api
     def pagination_meta(collection)
       {
         current_page: collection.current_page,
-        total_pages:  collection.total_pages,
-        total_count:  collection.total_count,
-        per_page:     collection.limit_value
+        total_pages: collection.total_pages,
+        total_count: collection.total_count,
+        per_page: collection.limit_value
       }
     end
   end

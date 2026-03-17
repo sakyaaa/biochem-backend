@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Api
   class CommentsController < BaseController
     skip_before_action :authenticate_user!, only: :index
@@ -6,10 +8,10 @@ module Api
     def index
       @comments = @article.comments.approved.includes(:user).order(created_at: :asc)
       render json: {
-        data: @comments.map { |c|
+        data: @comments.map do |c|
           { id: c.id, body: c.body, created_at: c.created_at,
             user: { id: c.user.id, name: c.user.name } }
-        }
+        end
       }
     end
 

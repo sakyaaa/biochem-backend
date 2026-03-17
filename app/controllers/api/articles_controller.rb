@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Api
   class ArticlesController < BaseController
     skip_before_action :authenticate_user!, only: %i[index show]
@@ -13,7 +15,7 @@ module Api
       end
 
       @articles = @articles.includes(:author, :section, :tags)
-                            .page(params[:page]).per(params[:per_page] || 20)
+                           .page(params[:page]).per(params[:per_page] || 20)
 
       render json: {
         data: serialize_collection(@articles),
@@ -23,7 +25,7 @@ module Api
 
     def show
       ViewLog.create(user: current_user, article: @article)
-      Article.where(id: @article.id).update_all("views_count = views_count + 1")
+      Article.where(id: @article.id).update_all('views_count = views_count + 1')
       render json: { data: serialize_resource(@article.reload) }
     end
 
@@ -68,16 +70,19 @@ module Api
 
     def serialize_resource(article)
       {
-        id:          article.id,
-        title:       article.title,
-        content:     article.content,
-        status:      article.status,
+        id: article.id,
+        title: article.title,
+        content: article.content,
+        status: article.status,
         views_count: article.views_count,
-        created_at:  article.created_at,
-        updated_at:  article.updated_at,
-        author:      { id: article.author.id, name: article.author.name },
-        section:     article.section ? { id: article.section.id, name: article.section.name, slug: article.section.slug } : nil,
-        tags:        article.tags.map { |t| { id: t.id, name: t.name } }
+        created_at: article.created_at,
+        updated_at: article.updated_at,
+        author: { id: article.author.id, name: article.author.name },
+        section: if article.section
+                   { id: article.section.id, name: article.section.name,
+                     slug: article.section.slug }
+                 end,
+        tags: article.tags.map { |t| { id: t.id, name: t.name } }
       }
     end
 

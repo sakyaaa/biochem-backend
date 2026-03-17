@@ -1,4 +1,6 @@
-require "active_support/core_ext/integer/time"
+# frozen_string_literal: true
+
+require 'active_support/core_ext/integer/time'
 
 Rails.application.configure do
   config.enable_reloading = true
@@ -18,4 +20,7 @@ Rails.application.configure do
 
   config.log_level = :debug
   config.log_tags = [:request_id]
+
+  # Разрешаем внутренний Docker-хост (SSR-запросы от frontend-контейнера)
+  config.hosts << 'web'
 end

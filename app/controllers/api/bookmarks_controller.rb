@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 module Api
   class BookmarksController < BaseController
     def index
       @bookmarks = current_user.bookmarks.includes(:article).order(created_at: :desc)
       render json: {
-        data: @bookmarks.map { |b|
+        data: @bookmarks.map do |b|
           { id: b.id, article: { id: b.article.id, title: b.article.title } }
-        }
+        end
       }
     end
 

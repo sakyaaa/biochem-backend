@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Api
   class SectionsController < BaseController
     skip_before_action :authenticate_user!
@@ -16,10 +18,10 @@ module Api
 
     def serialize(section)
       {
-        id:          section.id,
-        name:        section.name,
+        id: section.id,
+        name: section.name,
         description: section.description,
-        slug:        section.slug,
+        slug: section.slug,
         articles_count: section.articles.published.count
       }
     end

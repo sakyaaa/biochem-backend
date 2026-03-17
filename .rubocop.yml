@@ -1,0 +1,41 @@
+AllCops:
+  TargetRubyVersion: 3.3
+  NewCops: enable
+  Exclude:
+    - "bin/**/*"
+    - "db/schema.rb"
+    - "node_modules/**/*"
+    - "vendor/**/*"
+
+# Rails API — документация классов не нужна
+Style/Documentation:
+  Enabled: false
+
+# Rails-проекты с длинными методами — стандартная практика
+Metrics/MethodLength:
+  Max: 25
+
+Metrics/AbcSize:
+  Max: 35
+
+Metrics/CyclomaticComplexity:
+  Max: 10
+
+Layout/LineLength:
+  Max: 150
+  Exclude:
+    - "db/seeds.rb"
+
+Metrics/BlockLength:
+  Max: 50
+  Exclude:
+    - "spec/**/*"
+    - "config/**/*"
+
+# Однобуквенные параметры в блоках — нормально
+Naming/MethodParameterName:
+  MinNameLength: 1
+
+# Используется в Devise SessionsController
+Lint/UnderscorePrefixedVariableName:
+  Enabled: false

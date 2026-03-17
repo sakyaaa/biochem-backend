@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 class CreateArticles < ActiveRecord::Migration[8.0]
   def change
     create_table :articles do |t|
       t.string     :title,       null: false
-      t.text       :content,     null: false, default: ""
+      t.text       :content,     null: false, default: ''
       t.integer    :status,      null: false, default: 0
       t.references :author,      null: false, foreign_key: { to_table: :users }
       t.references :section,     null: true,  foreign_key: true

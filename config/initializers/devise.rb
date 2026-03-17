@@ -1,7 +1,9 @@
-require "devise/orm/active_record"
+# frozen_string_literal: true
+
+require 'devise/orm/active_record'
 
 Devise.setup do |config|
-  config.mailer_sender = "noreply@biochem.ru"
+  config.mailer_sender = 'noreply@biochem.ru'
   config.case_insensitive_keys = [:email]
   config.strip_whitespace_keys = [:email]
   config.skip_session_storage = [:http_auth]
@@ -20,13 +22,13 @@ Devise.setup do |config|
   end
 
   config.jwt do |jwt|
-    jwt.secret = ENV.fetch("DEVISE_JWT_SECRET_KEY") { Rails.application.secret_key_base }
+    jwt.secret = ENV.fetch('DEVISE_JWT_SECRET_KEY') { Rails.application.secret_key_base }
     jwt.dispatch_requests = [
-      ["POST", %r{^/api/auth/sign_in$}],
-      ["POST", %r{^/api/auth/sign_up$}]
+      ['POST', %r{^/api/auth/sign_in$}],
+      ['POST', %r{^/api/auth/sign_up$}]
     ]
     jwt.revocation_requests = [
-      ["DELETE", %r{^/api/auth/sign_out$}]
+      ['DELETE', %r{^/api/auth/sign_out$}]
     ]
     jwt.expiration_time = 24.hours.to_i
   end

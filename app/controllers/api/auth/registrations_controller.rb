@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Api
   module Auth
     class RegistrationsController < Devise::RegistrationsController
@@ -15,7 +17,7 @@ module Api
         if resource.persisted?
           render json: {
             data: { id: resource.id, name: resource.name, email: resource.email, role: resource.role },
-            message: "Регистрация выполнена успешно"
+            message: 'Регистрация выполнена успешно'
           }, status: :created
         else
           render json: { errors: resource.errors.full_messages }, status: :unprocessable_entity

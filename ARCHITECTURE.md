@@ -38,7 +38,7 @@ db/
   seeds.rb                   # разделы + admin-пользователь
 spec/
   factories/                 # FactoryBot
-  models/                    # model specs
+  models/                    # model specs (user, article, section, comment, tag, bookmark, view_log)
 nginx/
   nginx.conf                 # /api/* → backend:3000, /* → frontend:4321
 ```
@@ -60,7 +60,7 @@ jwt_denylist: id, jti, exp
 ## API Endpoints
 ```
 POST   /api/auth/sign_up    — регистрация
-POST   /api/auth/sign_in    — вход (возвращает JWT в заголовке Authorization)
+POST   /api/auth/sign_in    — вход (JWT устанавливается через Set-Cookie httpOnly)
 DELETE /api/auth/sign_out   — выход (отзыв JWT)
 
 GET    /api/articles        — список (params: q, section_id, page, per_page)

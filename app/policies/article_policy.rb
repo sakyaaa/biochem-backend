@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ArticlePolicy < ApplicationPolicy
   def create?
     user.editor_or_admin?
