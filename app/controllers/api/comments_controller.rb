@@ -17,6 +17,7 @@ module Api
 
     def create
       @comment = @article.comments.build(comment_params.merge(user: current_user))
+      authorize @comment
       if @comment.save
         render json: {
           data: { id: @comment.id, body: @comment.body, created_at: @comment.created_at,
